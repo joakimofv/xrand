@@ -2,6 +2,7 @@ package xrand
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"sort"
 )
@@ -67,12 +68,38 @@ func randSplitUint64(r *rand.Rand, n uint64, parts int) []uint64 {
 	if parts < 1 {
 		panic(fmt.Errorf("invalid parts: %v < 1", parts))
 	}
+
+	randUint64n := func() uint64 {
+		return uint64(rand.Int63n(int64(n + 1)))
+	}
+	if r != nil {
+		randUint64n = func() uint64 {
+			return uint64(r.Int63n(int64(n + 1)))
+		}
+	}
+	if n >= math.MaxInt64 {
+		randUint64n = func() uint64 {
+			var ret uint64
+			for ret = rand.Uint64(); ret > n; ret = rand.Uint64() {
+			}
+			return ret
+		}
+		if r != nil {
+			randUint64n = func() uint64 {
+				var ret uint64
+				for ret = r.Uint64(); ret > n; ret = r.Uint64() {
+				}
+				return ret
+			}
+		}
+	}
+
 	pp := make([]uint64, parts)
 	for i, _ := range pp {
 		if r != nil {
-			pp[i] = uint64(r.Intn(int(n + 1)))
+			pp[i] = randUint64n()
 		} else {
-			pp[i] = uint64(rand.Intn(int(n + 1)))
+			pp[i] = randUint64n()
 		}
 	}
 	pp[0] = 0
