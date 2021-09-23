@@ -8,6 +8,32 @@ import (
 	"time"
 )
 
+func TestUint64n(t *testing.T) {
+	for n := 0; n < 1000; n++ {
+		num := rand.Uint64()
+		if num == 0 {
+			n--
+			continue
+		}
+		res := Uint64n(num)
+		if res >= num {
+			t.Errorf("Uint64n result ge than input: %v >= %v.", res, num)
+		}
+
+		seed := time.Now().UnixNano()
+		r := rand.New(rand.NewSource(seed))
+		res = RandUint64n(r, num)
+		if res >= num {
+			t.Errorf("Uint64n result ge than input: %v >= %v.", res, num)
+		}
+		r.Seed(seed)
+		res2 := RandUint64n(r, num)
+		if res != res2 {
+			t.Fatal("RandUint64n did not get the same result at reseed.")
+		}
+	}
+}
+
 func TestSplit(t *testing.T) {
 	for n := 0; n < 1000; n++ {
 		t.Run(fmt.Sprintf("%v", n), func(t *testing.T) {

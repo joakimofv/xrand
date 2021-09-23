@@ -7,6 +7,34 @@ import (
 	"sort"
 )
 
+// Uint64n is like rand.Int63n for uint64.
+func Uint64n(n uint64) uint64 {
+	if n <= math.MaxInt64 {
+		return uint64(rand.Int63n(int64(n)))
+	} else {
+		var ret uint64
+		for ret = rand.Uint64(); ret >= n; ret = rand.Uint64() {
+		}
+		return ret
+	}
+}
+
+// RandUint64n is like Uint64n but uses r *rand.Rand as source.
+// panics if r is nil.
+func RandUint64n(r *rand.Rand, n uint64) uint64 {
+	if r == nil {
+		panic("r is nil")
+	}
+	if n <= math.MaxInt64 {
+		return uint64(r.Int63n(int64(n)))
+	} else {
+		var ret uint64
+		for ret = r.Uint64(); ret >= n; ret = r.Uint64() {
+		}
+		return ret
+	}
+}
+
 // Split splits n into parts that add up to n.
 // panics if n < 0 or parts < 1.
 func Split(n int, parts int) []int {
