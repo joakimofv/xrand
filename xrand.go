@@ -19,17 +19,17 @@ func Uint64n(n uint64) uint64 {
 	}
 }
 
-// RandUint64n is like Uint64n but uses r *rand.Rand as source.
-// panics if r is nil.
-func RandUint64n(r *rand.Rand, n uint64) uint64 {
-	if r == nil {
-		panic("r is nil")
+// RandUint64n is like Uint64n but uses rng *rand.Rand as source.
+// panics if rng is nil.
+func RandUint64n(rng *rand.Rand, n uint64) uint64 {
+	if rng == nil {
+		panic("*rand.Rand is nil")
 	}
 	if n <= math.MaxInt64 {
-		return uint64(r.Int63n(int64(n)))
+		return uint64(rng.Int63n(int64(n)))
 	} else {
 		var ret uint64
-		for ret = r.Uint64(); ret >= n; ret = r.Uint64() {
+		for ret = rng.Uint64(); ret >= n; ret = rng.Uint64() {
 		}
 		return ret
 	}
@@ -41,16 +41,16 @@ func Split(n int, parts int) []int {
 	return randSplit(nil, n, parts)
 }
 
-// RandSplit is like Split but uses r *rand.Rand as source.
-// panics if r is nil.
-func RandSplit(r *rand.Rand, n int, parts int) []int {
-	if r == nil {
-		panic("r is nil")
+// RandSplit is like Split but uses rng *rand.Rand as source.
+// panics if rng is nil.
+func RandSplit(rng *rand.Rand, n int, parts int) []int {
+	if rng == nil {
+		panic("*rand.Rand is nil")
 	}
-	return randSplit(r, n, parts)
+	return randSplit(rng, n, parts)
 }
 
-func randSplit(r *rand.Rand, n int, parts int) []int {
+func randSplit(rng *rand.Rand, n int, parts int) []int {
 	if n < 0 {
 		panic(fmt.Errorf("invalid n: %v < 0", n))
 	}
@@ -59,8 +59,8 @@ func randSplit(r *rand.Rand, n int, parts int) []int {
 	}
 	pp := make([]int, parts)
 	for i, _ := range pp {
-		if r != nil {
-			pp[i] = r.Intn(n + 1)
+		if rng != nil {
+			pp[i] = rng.Intn(n + 1)
 		} else {
 			pp[i] = rand.Intn(n + 1)
 		}
@@ -83,27 +83,27 @@ func SplitUint64(n uint64, parts int) []uint64 {
 	return randSplitUint64(nil, n, parts)
 }
 
-// RandSplitUint64 is like SplitUInt64 but uses r *rand.Rand as source.
-// panics if r is nil.
-func RandSplitUint64(r *rand.Rand, n uint64, parts int) []uint64 {
-	if r == nil {
-		panic("r is nil")
+// RandSplitUint64 is like SplitUInt64 but uses rng *rand.Rand as source.
+// panics if rng is nil.
+func RandSplitUint64(rng *rand.Rand, n uint64, parts int) []uint64 {
+	if rng == nil {
+		panic("*rand.Rand is nil")
 	}
-	return randSplitUint64(r, n, parts)
+	return randSplitUint64(rng, n, parts)
 }
 
-func randSplitUint64(r *rand.Rand, n uint64, parts int) []uint64 {
+func randSplitUint64(rng *rand.Rand, n uint64, parts int) []uint64 {
 	if parts < 1 {
 		panic(fmt.Errorf("invalid parts: %v < 1", parts))
 	}
 
 	pp := make([]uint64, parts)
 	for i, _ := range pp {
-		if r != nil {
+		if rng != nil {
 			if n == math.MaxUint64 {
-				pp[i] = RandUint64n(r, n)
+				pp[i] = RandUint64n(rng, n)
 			} else {
-				pp[i] = RandUint64n(r, n+1)
+				pp[i] = RandUint64n(rng, n+1)
 			}
 		} else {
 			if n == math.MaxUint64 {
