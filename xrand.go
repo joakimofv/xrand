@@ -36,7 +36,7 @@ func RandUint64n(rng *rand.Rand, n uint64) uint64 {
 }
 
 // Split splits n into parts that add up to n.
-// panics if n < 0 or parts < 1.
+// panics if n < 0.
 func Split(n int, parts int) []int {
 	return randSplit(nil, n, parts)
 }
@@ -55,7 +55,7 @@ func randSplit(rng *rand.Rand, n int, parts int) []int {
 		panic(fmt.Errorf("invalid n: %v < 0", n))
 	}
 	if parts < 1 {
-		panic(fmt.Errorf("invalid parts: %v < 1", parts))
+		return nil
 	}
 	pp := make([]int, parts)
 	for i, _ := range pp {
@@ -78,7 +78,6 @@ func randSplit(rng *rand.Rand, n int, parts int) []int {
 }
 
 // SplitUint64 splits n into parts that add up to n.
-// panics if parts < 1.
 func SplitUint64(n uint64, parts int) []uint64 {
 	return randSplitUint64(nil, n, parts)
 }
@@ -94,7 +93,7 @@ func RandSplitUint64(rng *rand.Rand, n uint64, parts int) []uint64 {
 
 func randSplitUint64(rng *rand.Rand, n uint64, parts int) []uint64 {
 	if parts < 1 {
-		panic(fmt.Errorf("invalid parts: %v < 1", parts))
+		return nil
 	}
 
 	pp := make([]uint64, parts)

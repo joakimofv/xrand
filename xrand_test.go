@@ -37,13 +37,13 @@ func TestUint64n(t *testing.T) {
 func TestSplit(t *testing.T) {
 	for n := 0; n < 1000; n++ {
 		t.Run(fmt.Sprintf("%v", n), func(t *testing.T) {
-			parts := 1 + rand.Intn(n+1)
+			parts := rand.Intn(n + 1)
 			pp := Split(n, parts)
 			sum := 0
 			for _, p := range pp {
 				sum += p
 			}
-			if sum != n {
+			if sum != n && parts > 0 {
 				t.Errorf("Expected sum %v, got %v.", n, sum)
 			}
 
@@ -54,7 +54,7 @@ func TestSplit(t *testing.T) {
 			for _, p := range pp {
 				sum += p
 			}
-			if sum != n {
+			if sum != n && parts > 0 {
 				t.Errorf("Expected sum %v, got %v.", n, sum)
 			}
 			r.Seed(seed)
@@ -72,13 +72,13 @@ func TestSplitUint64(t *testing.T) {
 	for _, n := range []uint64{0, 1, 2, 10, 100, 1000, 10000, math.MaxInt64 - 1, math.MaxInt64, math.MaxUint64 - 1, math.MaxUint64} {
 		t.Run(fmt.Sprintf("%v", n), func(t *testing.T) {
 			for count := 0; count < 100; count++ {
-				parts := 1 + rand.Intn(5)
+				parts := rand.Intn(5)
 				pp := SplitUint64(n, parts)
 				sum := uint64(0)
 				for _, p := range pp {
 					sum += p
 				}
-				if sum != n {
+				if sum != n && parts > 0 {
 					t.Errorf("Expected sum %v, got %v.", n, sum)
 				}
 
@@ -89,7 +89,7 @@ func TestSplitUint64(t *testing.T) {
 				for _, p := range pp {
 					sum += p
 				}
-				if sum != n {
+				if sum != n && parts > 0 {
 					t.Errorf("Expected sum %v, got %v.", n, sum)
 				}
 				r.Seed(seed)
