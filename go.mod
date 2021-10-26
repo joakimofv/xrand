@@ -1,4 +1,4 @@
-module github.com/joakimofv/xrand
+module github.com/joakimofv/xrand/v2
 
 go 1.16
 
